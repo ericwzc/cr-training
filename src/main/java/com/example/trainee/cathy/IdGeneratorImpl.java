@@ -26,7 +26,6 @@ public class IdGeneratorImpl implements IdGenerator {
 		//set init value 
 		if(value == null) {
 			value = 0;
-			cacheMap.put(prefix, value);
 		}
 		
 		//increment by 1 
