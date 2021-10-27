@@ -8,7 +8,13 @@ public class Test {
 		
 		IdGenerator generator = new IdGeneratorImpl();
 		
-		System.out.println(generator.getId("SIN"));
+		int i = 0;
+		
+		while (i <= 100) {
+			System.out.println(generator.getId("SIN"));
+			System.out.println(generator.getId("ICN"));
+			++i;
+		}
 	}
 
 }
