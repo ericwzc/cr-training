@@ -1,7 +1,6 @@
 package com.example.trainee.tink;
 
 import com.example.demo.id.IdGenerator;
-
 import java.text.NumberFormat;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
