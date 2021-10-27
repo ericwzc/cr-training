@@ -2,14 +2,14 @@ package com.example.trainee.cathy;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.example.demo.id.IdGenerator;
 
 public class IdGeneratorImpl implements IdGenerator {
 
-	private Map<String, Integer> cacheMap = new HashMap<String, Integer>();
+	private Map<String, Integer> cacheMap = new ConcurrentHashMap<String, Integer>();
 	
 	@Override
 	public String getId(String prefix) {
@@ -20,7 +20,7 @@ public class IdGeneratorImpl implements IdGenerator {
 		return new SimpleDateFormat("yyyyMMddHHmm").format(Calendar.getInstance().getTime());
 	}
 	
-	private String getRunningNumber(String prefix) {
+	private synchronized String getRunningNumber(String prefix) {
 		Integer value = cacheMap.get(prefix);
 		
 		//set init value 
