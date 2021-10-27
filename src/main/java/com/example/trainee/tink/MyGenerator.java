@@ -3,11 +3,13 @@ package com.example.trainee.tink;
 import com.example.demo.id.IdGenerator;
 
 import java.text.NumberFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MyGenerator implements IdGenerator {
-    private int currentNumber;
+    private Map<String, Integer> numMap;
     MyGenerator() {
-        currentNumber = 1;
+        numMap = new HashMap<String, Integer>();
     }
 
     private String transformToString(int number, int maxLength) {
@@ -17,12 +19,19 @@ public class MyGenerator implements IdGenerator {
         return formatter.format(number);
     }
 
+    private Integer getNumberByKey(String key) {
+        if (numMap.containsKey(key)) {
+            return numMap.get(key);
+        } else {
+            return 0;
+        }
+    }
+
     @Override
     public String getId(String prefix) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(prefix);
-        sb.append(transformToString(currentNumber++, 10));
-        return sb.toString();
+        Integer currentNumber = getNumberByKey(prefix);
+        numMap.put(prefix, ++currentNumber);
+        return prefix + transformToString(currentNumber, 10);
     }
 }
 
