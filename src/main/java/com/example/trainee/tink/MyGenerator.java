@@ -9,7 +9,7 @@ import java.util.Map;
 public class MyGenerator implements IdGenerator {
     private Map<String, Integer> numMap;
     MyGenerator() {
-        numMap = new HashMap<String, Integer>();
+        numMap = new HashMap<>();
     }
 
     private String transformToString(int number, int maxLength) {
@@ -20,11 +20,7 @@ public class MyGenerator implements IdGenerator {
     }
 
     private Integer getNumberByKey(String key) {
-        if (numMap.containsKey(key)) {
-            return numMap.get(key);
-        } else {
-            return 0;
-        }
+        return numMap.getOrDefault(key, 0);
     }
 
     @Override
