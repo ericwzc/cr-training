@@ -2,7 +2,6 @@ package com.example.trainee.taylor;
 
 import com.example.demo.id.IdGenerator;
 
-import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -17,6 +16,6 @@ public class TaylorIDGenerator implements IdGenerator {
             idMap.computeIfAbsent(prefix, k-> new AtomicInteger(1));
         }
 
-        return Thread.currentThread().getName() + ":" + prefix+":"+ idMap.get(prefix);
+        return prefix+":"+ idMap.get(prefix);
     }
 }
