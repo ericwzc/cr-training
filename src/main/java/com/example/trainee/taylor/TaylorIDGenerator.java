@@ -2,12 +2,17 @@ package com.example.trainee.taylor;
 
 import com.example.demo.id.IdGenerator;
 
-import java.util.Random;
+import java.util.*;
 
 public class TaylorIDGenerator implements IdGenerator {
-    static int suffixNum = 1;
+    private HashMap<String, Integer> idMap = new HashMap<>();
+    private int suffixNum = 1;
     @Override
     public String getId(String prefix) {
-        return prefix+":"+ (++suffixNum);
+        if(idMap.containsKey(prefix)) {
+            suffixNum = idMap.get(prefix) + 1;
+        }
+        idMap.put(prefix,suffixNum);
+        return prefix+":"+ suffixNum;
     }
 }
