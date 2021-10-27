@@ -13,7 +13,7 @@ public class BobIdGenerator implements IdGenerator {
     public String getId(String prefix) {
         AtomicInteger value = integerHashMap.getOrDefault(prefix,new AtomicInteger(0));
         Integer result = value.getAndAdd(1);
-        integerHashMap.put(prefix,value);
+        integerHashMap.putIfAbsent(prefix,value);
         return prefix+result;
     }
 
