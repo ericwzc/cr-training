@@ -5,6 +5,7 @@ import com.example.demo.id.IdGenerator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class BobIdGenerator implements IdGenerator {
     private Map<String, Integer> integerHashMap = new ConcurrentHashMap<>();
@@ -12,7 +13,8 @@ public class BobIdGenerator implements IdGenerator {
     @Override
     public String getId(String prefix) {
         Integer value = integerHashMap.getOrDefault(prefix,0);
-        integerHashMap.put(prefix, value++);
+        AtomicInteger ai = new AtomicInteger(value);
+        integerHashMap.put(prefix, ai.getAndAdd(1));
         return prefix+value;
     }
 
