@@ -1,15 +1,23 @@
 package com.example.trainee.bob;
 
 import com.example.demo.id.IdGenerator;
-import org.springframework.stereotype.Component;
 
-import java.time.Instant;
-import java.util.Date;
-@Component
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 public class BobIdGenerator implements IdGenerator {
+    private Map<String, Integer> integerHashMap = new ConcurrentHashMap<>();
+
     @Override
     public String getId(String prefix) {
-        Instant instant = new Date().toInstant();
-        return prefix + instant.toString();
+        Integer value = integerHashMap.getOrDefault(prefix,0);
+        integerHashMap.put(prefix, value++);
+        return prefix+value;
     }
+
+
+
+
+
 }
