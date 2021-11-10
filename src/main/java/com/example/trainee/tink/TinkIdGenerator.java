@@ -6,10 +6,13 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class MyGenerator implements IdGenerator {
-    private Map<String, AtomicInteger> numMap;
-    MyGenerator() {
-        numMap = new ConcurrentHashMap<String, AtomicInteger>();
+public class TinkIdGenerator implements IdGenerator {
+    private Map<String, AtomicInteger> numMap = new ConcurrentHashMap();
+    public TinkIdGenerator() {
+    }
+
+    private void generateMap() {
+
     }
 
     private String transformToString(int number, int maxLength) {
@@ -19,9 +22,14 @@ public class MyGenerator implements IdGenerator {
         return formatter.format(number);
     }
 
-    private AtomicInteger getNumberByKey(String key) {
+    private int getNumberByKey(String key) {
+        AtomicInteger result = new AtomicInteger();
         numMap.putIfAbsent(key, new AtomicInteger(0));
-        return numMap.get(key);
+        numMap.computeIfPresent(key, (k, v) -> {
+            result.set(v.incrementAndGet());
+            return v;
+        });
+        return result.get();
     }
 
     private String getTimestamp() {
@@ -30,9 +38,8 @@ public class MyGenerator implements IdGenerator {
 
     @Override
     public String getId(String prefix) {
-        AtomicInteger currentNumberObject = getNumberByKey(prefix);
-        int currentNumber = currentNumberObject.incrementAndGet();
-        return prefix + transformToString(currentNumber, 10);
+        int currentNumber = getNumberByKey(prefix);
+        return prefix + transformToString(currentNumber, 5);
     }
 }
 
