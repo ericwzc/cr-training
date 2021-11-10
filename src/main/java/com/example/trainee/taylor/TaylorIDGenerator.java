@@ -2,28 +2,46 @@ package com.example.trainee.taylor;
 
 import com.example.demo.id.IdGenerator;
 
-import java.util.*;
-import java.util.concurrent.Semaphore;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLongArray;
 
 public class TaylorIDGenerator implements IdGenerator {
-    private HashMap<String, Integer> idMap = new HashMap<>();
-    private int suffixNum = 1;
-    private Semaphore mutex = new Semaphore(1);
+    private ConcurrentHashMap<String, AtomicLongArray> idMap;
 
+    private static final int LAST_MINUTE_INDEX = 0;
+    private static final int CURRENT_SEQ_INDEX = 1;
+
+    public TaylorIDGenerator(){
+        idMap = new ConcurrentHashMap<>();
+    }
     @Override
     public String getId(String prefix) {
-        try {
-            mutex.acquire();
-            if (idMap.containsKey(prefix)) {
-                suffixNum = idMap.get(prefix) + 1;
-            }
-            idMap.put(prefix, suffixNum);
-            return prefix + ":" + suffixNum;
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        } finally {
-            mutex.release();
+        return sequenceGen(prefix);
+    }
+
+    private String sequenceGen(String prefix) {
+        idMap.putIfAbsent(prefix, new AtomicLongArray(new long[]{dateFormat(Calendar.getInstance().getTime()), 0}));
+        AtomicLongArray atomicArray = idMap.get(prefix);
+
+        //Reset sequence based on every minute
+        Calendar calendar = Calendar.getInstance();
+        long currentMinute =  dateFormat(calendar.getTime());
+        long lastMinute = atomicArray.get(LAST_MINUTE_INDEX);
+        if(currentMinute > lastMinute) {
+            atomicArray.set(LAST_MINUTE_INDEX, currentMinute);
+            atomicArray.set(CURRENT_SEQ_INDEX, 0);
         }
-        return "bad sequence!";
+
+        long currentTimeStamp = dateFormat(calendar.getTime());
+        long currentSeq = atomicArray.incrementAndGet(CURRENT_SEQ_INDEX);
+        return String.format("%s-%s-%s",prefix,currentTimeStamp,currentSeq);
+    }
+
+    private long dateFormat(Date date) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmm");
+        return Long.parseLong(formatter.format(date));
     }
 }
