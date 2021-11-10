@@ -19,6 +19,6 @@ public class BobIdGenerator implements IdGenerator {
 
     @Override
     public String getId(String prefix) {
-        return generateId(prefix + Instant.now().toString());
+        return generateId(prefix + Instant.now().toString().replaceAll("\\D", ""));
     }
 }
